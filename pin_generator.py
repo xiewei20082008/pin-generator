@@ -31,6 +31,8 @@ def manualBuild(args):
     print 'rm -r ~/rpmbuild ~/src'
     print 'mkdir -p ~/rpmbuild/{BUILD,BUILDROOT,RPMS,SOURCES,SPECS,SRPMS}'
     print 'mkdir -p ~/src && cd ~/src'
+    
+    print ''
     url = "https://code.citrite.net/projects/XS/repos/xenserver-specs/raw/SPECS/{buildRepo}.spec?at=refs/heads/{branch}".format(
         repo=args.repo, branch=args.branch, buildRepo=args.buildRepo)
     print "curl -o {buildRepo}.spec '".format(buildRepo=args.buildRepo) + url + "'"
@@ -42,11 +44,14 @@ def manualBuild(args):
             i = line.split(' ')
             versionNum = i[1].strip()
             break
-    print 'versionNum is' + versionNum
+    # print 'versionNum is' + versionNum
+    print ''
     f.close()
     os.remove(args.buildRepo + '.spec')
     print "curl -o ~/rpmbuild/SOURCES/{buildRepo}-{versionNum}.tar.gz 'https://code.citrite.net/rest/archive/latest/projects/{repo}/repos/{buildRepo}/archive?at=refs%2Fheads%2F{branch}&format=tar.gz&prefix={buildRepo}-{versionNum}'".format(
         buildRepo=args.buildRepo, repo=args.repo, branch=args.branch,versionNum=versionNum)
+        
+    print ''
     print 'spectool -g -R {0}.spec'.format(args.buildRepo)    
     print 'rpmbuild -ba {0}.spec'.format(args.buildRepo)
 
@@ -66,7 +71,7 @@ def main():
         default='private/weix/req-440',
         action='store')
 
-    relatedRepos = 'guest-templates-json;linux-guest-loader;xenserver-pv-tools'
+    relatedRepos = 'guest-templates-json;linux-guest-loader;xenserver-pv-tools;xapi'
 
     parser.add_argument(
         'pinRepo',
